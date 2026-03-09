@@ -7,11 +7,12 @@ on:
 
 jobs:
   release:
-
     runs-on: ubuntu-latest
 
-    steps:
+    permissions:
+      contents: write
 
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -20,15 +21,16 @@ jobs:
         with:
           node-version: 18
           registry-url: https://registry.npmjs.org/
+          cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build CLI binaries
         run: npm run build:all
 
       - name: Publish to npm
-        run: npm publish
+        run: npm publish --access public --otp=${{ secrets.NPM_OTP }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
