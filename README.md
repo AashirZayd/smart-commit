@@ -1,134 +1,183 @@
+<div align="center">
 
-# 🚀 Smart Commit CLI
+<pre>
 
-[![npm version](https://img.shields.io/npm/v/smart-commit-cli.svg?style=flat-square)](https://www.npmjs.com/package/smart-commit-cli)
-[![license](https://img.shields.io/npm/l/smart-commit-cli.svg?style=flat-square)](https://github.com/aashirzayd/smart-commit-cli/blob/main/LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+      ░██████   ░███     ░███    ░███    ░█████████  ░██████████     ░██████    ░██████   ░███     ░███ ░███     ░███ ░██████░██████████     ░██████  ░██         ░██████
+     ░██   ░██  ░████   ░████   ░██░██   ░██     ░██     ░██        ░██   ░██  ░██   ░██  ░████   ░████ ░████   ░████   ░██      ░██        ░██   ░██ ░██           ░██  
+    ░██         ░██░██ ░██░██  ░██  ░██  ░██     ░██     ░██       ░██        ░██     ░██ ░██░██ ░██░██ ░██░██ ░██░██   ░██      ░██       ░██        ░██           ░██  
+     ░████████  ░██ ░████ ░██ ░█████████ ░█████████      ░██       ░██        ░██     ░██ ░██ ░████ ░██ ░██ ░████ ░██   ░██      ░██       ░██        ░██           ░██  
+            ░██ ░██  ░██  ░██ ░██    ░██ ░██   ░██       ░██       ░██        ░██     ░██ ░██  ░██  ░██ ░██  ░██  ░██   ░██      ░██       ░██        ░██           ░██  
+     ░██   ░██  ░██       ░██ ░██    ░██ ░██    ░██      ░██        ░██   ░██  ░██   ░██  ░██       ░██ ░██       ░██   ░██      ░██        ░██   ░██ ░██           ░██  
+      ░██████   ░██       ░██ ░██    ░██ ░██     ░██     ░██         ░██████    ░██████   ░██       ░██ ░██       ░██ ░██████    ░██         ░██████  ░██████████ ░██████
+                                                                                                                                                                         
+                                                                                                                                                                         
+                                                                                                                                                                        
+</pre>
 
-**Stop overthinking your commit messages.** Smart Commit is an interactive CLI that analyzes your staged files, suggests the right [Conventional Commit](https://www.conventionalcommits.org/) type, detects scopes automatically, and generates clean, structured messages in seconds.
+# Smart Commit CLI
+
+**The intelligent commit architect for modern developers.**
+
+Automatically analyze staged files, detect scopes, and generate clean **Conventional Commit** messages instantly.
+
+</div>
 
 ---
 
-##  Features
+<div align="center">
 
-*  **Intelligent Suggestions:** Analyzes code changes to recommend `feat`, `fix`, `docs`, and more.
-*  **Auto-Scope Detection**: Infers the scope based on your file paths and directory structure.
-*  **Interactive Prompts:** A guided experience that ensures your git history stays professional.
-* **Diff Summary:** Preview a high-level summary of your additions and deletions before committing.
-*  **Emoji Support:** Optional Gitmoji integration to make your logs more readable (and fun).
-*  **Quick Mode:** Use `--quick` to bypass prompts and commit instantly with AI-suggested defaults.
+[![npm](https://img.shields.io/npm/v/smart-commit-cli?style=for-the-badge)](https://www.npmjs.com/package/smart-commit-cli)
+![downloads](https://img.shields.io/npm/dt/smart-commit-cli?style=for-the-badge)
+![license](https://img.shields.io/npm/l/smart-commit-cli?style=for-the-badge)
+![stars](https://img.shields.io/github/stars/AashirZayd/smart-commit?style=for-the-badge)
+
+</div>
 
 ---
 
-##  Installation
+# 🎬 Demo
 
-Install globally using your preferred package manager:
+<p align="center">
+<img src="./assets/demo.gif" width="720"/>
+</p>
+
+---
+
+# ✨ Capabilities
+
+| Feature                   | Description                                                               |
+| ------------------------- | ------------------------------------------------------------------------- |
+| Intelligent Suggestions   | Detects whether your changes are a feature, fix, docs update, or refactor |
+| Automatic Scope Detection | Infers commit scopes from directory structure                             |
+| Interactive CLI           | Guided commit generation with clean prompts                               |
+| Diff Summary              | Shows additions and deletions before committing                           |
+| Emoji Support             | Optional Gitmoji-style commits                                            |
+| Quick Mode                | Commit instantly using `--quick`                                          |
+
+---
+
+# ⚡ Quick Install
+
+Install globally:
 
 ```bash
-# Using npm
 npm install -g smart-commit-cli
-
-# Using yarn
-yarn global add smart-commit-cli
-
-# Using pnpm
-pnpm add -g smart-commit-cli
-
 ```
 
-Or run it instantly without installing:
+Or run instantly:
 
 ```bash
 npx smart-commit-cli
-
 ```
+
+Works on **Linux, macOS, and Windows**.
 
 ---
 
-##  Usage
+# 🛠 Usage
 
-### 1. Stage your changes
+Stage your changes:
 
 ```bash
 git add .
-
 ```
 
-### 2. Run the CLI
+Run Smart Commit:
 
 ```bash
 smart-commit
-
 ```
 
-### Command Line Flags
+Example output:
 
-| Flag | Description |
-| --- | --- |
-| `--quick` | Skip the interactive flow and use the suggested message. |
-| `--no-emoji` | Generate messages without the emoji prefix. |
-| `--version` | Display current version. |
-| `--help` | Show all available commands and flags. |
+```
+🔍 Checking git status...
 
----
+📦 Staged files:
+src/auth/login.js
 
-## 🎬 Example Flow
+📊 Changes Summary:
+Files: 1 | +20 additions | -3 deletions
 
-```text
- Checking git status...
+🤖 Suggested commit type: feat
 
- Staged files:
-   modify: src/auth/login.ts
-   modify: tests/auth.spec.ts
+? Commit type: feat
+? Scope: auth
+? Commit message: add login validation
 
- Changes Summary:
-   Files: 2 | +24 additions | -2 deletions
-
- Suggested type: feat (new functionality detected)
-
-? Select commit type: feat
-? Select scope: auth
-? Enter commit message: add login validation logic
-
- Success! Generated commit:
- feat(auth): add login validation logic
-
+✨ feat(auth): add login validation
 ```
 
 ---
 
-##  Roadmap
+# ⚙ CLI Commands
 
-*  **AI-Powered Messages:** Integration with LLMs for deep semantic code analysis.
-*  **Custom Configurations:** Support for `.smartcommitrc` to define custom types and scopes.
-*  **Monorepo Support:** Better scope detection for multi-package repositories.
-*  **Git Hooks:** Easy setup as a `prepare-commit-msg` hook.
-
----
-
-##  Contributing
-
-Contributions make the open-source community an amazing place to learn, inspire, and create.
-
-1. **Fork** the Project.
-2. Create your **Feature Branch** (`git checkout -b feature/AmazingFeature`).
-3. **Commit** your changes (`smart-commit`).
-4. **Push** to the Branch (`git push origin feature/AmazingFeature`).
-5. Open a **Pull Request**.
+```
+smart-commit           # interactive commit workflow
+smart-commit --quick   # auto commit using suggestion
+smart-commit --no-emoji # disable emoji commits
+smart-commit --help    # show CLI help
+```
 
 ---
 
-##  License
+# 📸 Screenshots
 
-Distributed under the MIT License. See `LICENSE` for more information.
+### Commit detection
 
-##  Author
+![Screenshot](./assets/screenshot1.png)
 
-**Aashir Zayd**  **GitHub:** [@aashirzayd](https://www.google.com/search?q=https://github.com/aashirzayd)
+### Interactive prompt
 
-* Twitter: [@aashirzayd](https://www.google.com/search?q=https://twitter.com/aashirzayd)
+![Screenshot](./assets/screenshot2.png)
+
+### Commit preview
+
+![Screenshot](./assets/screenshot3.png)
 
 ---
 
-*Built with ❤️ for developers who value a clean git history.*
+# 🏗 Roadmap
 
+* AI-powered commit message generation
+* `.smartcommitrc` configuration support
+* Monorepo scope detection
+* Git hook integration
+
+---
+
+# 🤝 Contributing
+
+Clone the repo and run locally:
+
+```bash
+git clone https://github.com/AashirZayd/smart-commit-cli
+cd smart-commit-cli
+npm install
+npm link
+```
+
+Run:
+
+```bash
+smart-commit
+```
+
+---
+
+# 📄 License
+
+MIT License
+
+---
+
+# 👤 Author
+
+**Aashir Zayd**
+
+GitHub
+https://github.com/AashirZayd
+
+---
+
+⭐ If this project improves your workflow, consider giving it a star.
