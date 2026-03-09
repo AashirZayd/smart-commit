@@ -9,6 +9,7 @@ const { detectScopes } = require("../src/scopes")
 const { buildCommit } = require("../src/commit")
 const emojis = require("../src/emojis")
 const { suggestType } = require("../src/suggestType")
+const { getDiffSummary } = require("../src/diffSummary")
 
 async function run() {
 
@@ -28,13 +29,20 @@ async function run() {
       console.log(chalk.gray("Run: git add .\n"))
       process.exit()
     }
-
+    
     console.log(chalk.gray("\nStaged files:"))
     files.forEach(f => console.log("  " + f))
 
     const scopes = detectScopes(files)
     const suggestion = suggestType(files)
+            const diff = await getDiffSummary()
 
+        console.log(chalk.gray("\nChanges Summary:"))
+        console.log(
+        chalk.yellow(
+            `Files: ${diff.files}  |  +${diff.insertions} additions  |  -${diff.deletions} deletions`
+        )
+        )
     console.log(
       chalk.cyan(
         `\nSuggested commit type: ${suggestion.type} (${suggestion.reason})`
@@ -83,6 +91,8 @@ async function run() {
       }
 
     ])
+
+    
 
     const scope = answers.scope === "none" ? "" : answers.scope
     const emoji = emojis[answers.type] || ""
