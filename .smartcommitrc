@@ -1,0 +1,19 @@
+{
+  "types": {
+    "feat": ["add", "feature", "implement", "create"],
+    "fix": ["bug", "error", "patch", "resolve"],
+    "docs": ["docs", "readme", "documentation"],
+    "refactor": ["cleanup", "refactor", "optimize"],
+    "test": ["test", "spec"],
+    "chore": ["config", "build", "setup"]
+  },
+
+  "emoji": {
+    "feat": "✨",
+    "fix": "🐛",
+    "docs": "📝",
+    "refactor": "♻️",
+    "test": "🧪",
+    "chore": "🔧"
+  }
+}
