@@ -11,6 +11,11 @@ const emojis = require("../src/emojis")
 const { suggestType } = require("../src/suggestType")
 const { getDiffSummary } = require("../src/diffSummary")
 
+const args = process.argv.slice(2)
+
+const QUICK_MODE = args.includes("--quick")
+const NO_EMOJI = args.includes("--no-emoji")
+
 async function run() {
 
   try {
@@ -25,29 +30,51 @@ async function run() {
     spinner.stop()
 
     if (!files.length) {
-      console.log(chalk.red("\nNo staged files found."))
+      console.log(chalk.red("\nNo staged files found"))
       console.log(chalk.gray("Run: git add .\n"))
       process.exit()
     }
-    
+
     console.log(chalk.gray("\nStaged files:"))
     files.forEach(f => console.log("  " + f))
 
-    const scopes = detectScopes(files)
-    const suggestion = suggestType(files)
-            const diff = await getDiffSummary()
+    const diff = await getDiffSummary()
 
-        console.log(chalk.gray("\nChanges Summary:"))
-        console.log(
-        chalk.yellow(
-            `Files: ${diff.files}  |  +${diff.insertions} additions  |  -${diff.deletions} deletions`
-        )
-        )
+    console.log(chalk.gray("\nChanges Summary:"))
+    console.log(
+      chalk.yellow(
+        `Files: ${diff.files} | +${diff.insertions} additions | -${diff.deletions} deletions`
+      )
+    )
+
+    const suggestion = suggestType(files)
+
     console.log(
       chalk.cyan(
         `\nSuggested commit type: ${suggestion.type} (${suggestion.reason})`
       )
     )
+
+    const scopes = detectScopes(files)
+
+    if (QUICK_MODE) {
+
+      const commit = buildCommit({
+        type: suggestion.type,
+        scope: "",
+        message: "auto commit",
+        emoji: NO_EMOJI ? "" : emojis[suggestion.type] || ""
+      })
+
+      console.log("\n" + chalk.green("Quick Commit:\n"))
+      console.log(chalk.yellow(commit))
+
+      await git.commit(commit)
+
+      console.log(chalk.green("\nCommit created successfully\n"))
+
+      return
+    }
 
     const commitTypes = [
       suggestion.type,
@@ -65,21 +92,18 @@ async function run() {
     const prompt = inquirer.createPromptModule()
 
     const answers = await prompt([
-
       {
         type: "list",
         name: "type",
         message: "Commit type:",
         choices: uniqueTypes
       },
-
       {
         type: "list",
         name: "scope",
         message: "Scope:",
         choices: scopes.length ? [...scopes, "none"] : ["none"]
       },
-
       {
         type: "input",
         name: "message",
@@ -89,13 +113,10 @@ async function run() {
           return true
         }
       }
-
     ])
 
-    
-
     const scope = answers.scope === "none" ? "" : answers.scope
-    const emoji = emojis[answers.type] || ""
+    const emoji = NO_EMOJI ? "" : emojis[answers.type] || ""
 
     const commit = buildCommit({
       type: answers.type,
@@ -107,7 +128,7 @@ async function run() {
     console.log("\n" + chalk.green("Commit Preview:\n"))
     console.log(chalk.yellow(commit))
 
-    console.log("\nYou can also run manually:")
+    console.log("\nManual command:")
     console.log(chalk.cyan(`git commit -m "${commit}"\n`))
 
     const confirm = await prompt([
@@ -120,7 +141,7 @@ async function run() {
     ])
 
     if (!confirm.commit) {
-      console.log(chalk.gray("\nCommit skipped."))
+      console.log(chalk.gray("\nCommit skipped\n"))
       return
     }
 
