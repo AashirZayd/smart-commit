@@ -33,17 +33,9 @@ Automatically analyze staged files, detect scopes, and generate clean **Conventi
 
 </div>
 
----
 
-# 🎬 Demo
 
-<p align="center">
-<img src="./assets/demo.gif" width="720"/>
-</p>
-
----
-
-# ✨ Capabilities
+#  Capabilities
 
 | Feature                   | Description                                                               |
 | ------------------------- | ------------------------------------------------------------------------- |
@@ -56,7 +48,7 @@ Automatically analyze staged files, detect scopes, and generate clean **Conventi
 
 ---
 
-# ⚡ Quick Install
+#  Quick Install
 
 Install globally:
 
@@ -91,26 +83,26 @@ smart-commit
 Example output:
 
 ```
-🔍 Checking git status...
+ Checking git status...
 
-📦 Staged files:
+ Staged files:
 src/auth/login.js
 
-📊 Changes Summary:
+ Changes Summary:
 Files: 1 | +20 additions | -3 deletions
 
-🤖 Suggested commit type: feat
+ Suggested commit type: feat
 
 ? Commit type: feat
 ? Scope: auth
 ? Commit message: add login validation
 
-✨ feat(auth): add login validation
+ feat(auth): add login validation
 ```
 
 ---
 
-# ⚙ CLI Commands
+#  CLI Commands
 
 ```
 smart-commit           # interactive commit workflow
@@ -137,7 +129,7 @@ smart-commit --help    # show CLI help
 
 ---
 
-# 🏗 Roadmap
+#  Roadmap
 
 * AI-powered commit message generation
 * `.smartcommitrc` configuration support
