@@ -8,6 +8,7 @@ const { git, getStagedFiles } = require("../src/git")
 const { detectScopes } = require("../src/scopes")
 const { buildCommit } = require("../src/commit")
 const emojis = require("../src/emojis")
+const { suggestType } = require("../src/suggestType")
 
 async function run() {
 
@@ -30,6 +31,13 @@ async function run() {
   files.forEach(f => console.log("  " + f))
 
   const scopes = detectScopes(files)
+  const suggestion = suggestType(files)
+
+console.log(
+  chalk.cyan(
+    `\nSuggested commit type: ${suggestion.type} (${suggestion.reason})`
+  )
+)
 
   const answers = await inquirer.prompt([
 
@@ -38,6 +46,7 @@ async function run() {
       name: "type",
       message: "Commit type:",
       choices: [
+        suggestion.type,
         "feat",
         "fix",
         "docs",
@@ -45,7 +54,7 @@ async function run() {
         "refactor",
         "test",
         "chore"
-      ]
+        ]
     },
 
     {
