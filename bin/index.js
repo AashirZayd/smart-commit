@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const inquirer = require("inquirer").default
+const inquirer = require("inquirer")
 const chalk = require("chalk").default
 const ora = require("ora").default
 
@@ -12,92 +12,117 @@ const { suggestType } = require("../src/suggestType")
 
 async function run() {
 
-  const spinner = ora({
-    text: "Checking git status...",
-    spinner: "dots"
-  }).start()
+  try {
 
-  const files = await getStagedFiles()
+    const spinner = ora({
+      text: "Checking git status...",
+      spinner: "dots"
+    }).start()
 
-  spinner.stop()
+    const files = await getStagedFiles()
 
-  if (!files.length) {
-    console.log(chalk.red("\nNo staged files found."))
-    console.log(chalk.gray("Run: git add .\n"))
-    process.exit()
-  }
+    spinner.stop()
 
-  console.log(chalk.gray("\nStaged files:"))
-  files.forEach(f => console.log("  " + f))
-
-  const scopes = detectScopes(files)
-  const suggestion = suggestType(files)
-
-console.log(
-  chalk.cyan(
-    `\nSuggested commit type: ${suggestion.type} (${suggestion.reason})`
-  )
-)
-
-  const answers = await inquirer.prompt([
-
-    {
-      type: "list",
-      name: "type",
-      message: "Commit type:",
-      choices: [
-        suggestion.type,
-        "feat",
-        "fix",
-        "docs",
-        "style",
-        "refactor",
-        "test",
-        "chore"
-        ]
-    },
-
-    {
-      type: "list",
-      name: "scope",
-      message: "Scope:",
-      choices: [...scopes, "none"]
-    },
-
-    {
-      type: "input",
-      name: "message",
-      message: "Commit message:"
+    if (!files.length) {
+      console.log(chalk.red("\nNo staged files found."))
+      console.log(chalk.gray("Run: git add .\n"))
+      process.exit()
     }
 
-  ])
+    console.log(chalk.gray("\nStaged files:"))
+    files.forEach(f => console.log("  " + f))
 
-  const scope = answers.scope === "none" ? "" : answers.scope
-  const emoji = emojis[answers.type] || ""
+    const scopes = detectScopes(files)
+    const suggestion = suggestType(files)
 
-  const commit = buildCommit({
-    type: answers.type,
-    scope,
-    message: answers.message,
-    emoji
-  })
+    console.log(
+      chalk.cyan(
+        `\nSuggested commit type: ${suggestion.type} (${suggestion.reason})`
+      )
+    )
 
-  console.log("\n" + chalk.green("Commit Preview:\n"))
-  console.log(chalk.yellow(commit))
+    const commitTypes = [
+      suggestion.type,
+      "feat",
+      "fix",
+      "docs",
+      "style",
+      "refactor",
+      "test",
+      "chore"
+    ]
 
-  const confirm = await inquirer.prompt([
-    {
-      type: "confirm",
-      name: "commit",
-      message: "Create this commit?"
+    const uniqueTypes = [...new Set(commitTypes)]
+
+    const prompt = inquirer.createPromptModule()
+
+    const answers = await prompt([
+
+      {
+        type: "list",
+        name: "type",
+        message: "Commit type:",
+        choices: uniqueTypes
+      },
+
+      {
+        type: "list",
+        name: "scope",
+        message: "Scope:",
+        choices: scopes.length ? [...scopes, "none"] : ["none"]
+      },
+
+      {
+        type: "input",
+        name: "message",
+        message: "Commit message:",
+        validate(input) {
+          if (!input) return "Commit message cannot be empty"
+          return true
+        }
+      }
+
+    ])
+
+    const scope = answers.scope === "none" ? "" : answers.scope
+    const emoji = emojis[answers.type] || ""
+
+    const commit = buildCommit({
+      type: answers.type,
+      scope,
+      message: answers.message,
+      emoji
+    })
+
+    console.log("\n" + chalk.green("Commit Preview:\n"))
+    console.log(chalk.yellow(commit))
+
+    console.log("\nYou can also run manually:")
+    console.log(chalk.cyan(`git commit -m "${commit}"\n`))
+
+    const confirm = await prompt([
+      {
+        type: "confirm",
+        name: "commit",
+        message: "Create this commit now?",
+        default: true
+      }
+    ])
+
+    if (!confirm.commit) {
+      console.log(chalk.gray("\nCommit skipped."))
+      return
     }
-  ])
-
-  if (confirm.commit) {
 
     await git.commit(commit)
 
-    console.log(chalk.green("\nCommit created successfully"))
+    console.log(chalk.green("\nCommit created successfully\n"))
+
+  } catch (err) {
+
+    console.log(chalk.red("\nError running smart-commit\n"))
+    console.log(err.message)
+
   }
 
 }
