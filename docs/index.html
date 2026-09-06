@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Commit — Intelligent, Local-First Conventional Commits</title>
+  <meta name="description" content="Intelligent, local-first conventional commit CLI for Git. Analyzes staged diffs and automatically infers commit types and scopes with zero API keys or cloud dependencies.">
+  <meta name="theme-color" content="#0b0f19">
+
+  <!-- Open Graph / Social Cards -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Smart Commit — Intelligent, Local-First Conventional Commits">
+  <meta property="og:description" content="Turn staged Git changes into clean conventional commits from your terminal. 100% local, zero cloud dependencies, zero telemetry.">
+  <meta property="og:url" content="https://aashirzayd.github.io/smart-commit/">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Smart Commit — Intelligent, Local-First Conventional Commits">
+  <meta name="twitter:description" content="Turn staged Git changes into clean conventional commits from your terminal. 100% local, zero cloud dependencies, zero telemetry.">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Grid Glow -->
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <!-- Navigation -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="#" class="brand-logo" aria-label="Smart Commit Home">
+        <span class="brand-icon">⚡</span>
+        <span class="brand-name">smart-commit</span>
+        <span class="version-tag">v1.2.0</span>
+      </a>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="nav-menu" id="navMenu">
+        <a href="#what-is" class="nav-link">About</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#how-it-works" class="nav-link">How It Works</a>
+        <a href="#examples" class="nav-link">Examples</a>
+        <a href="#install" class="nav-link">Install</a>
+        <a href="https://github.com/AashirZayd/smart-commit" class="nav-link nav-link-external" target="_blank" rel="noopener noreferrer">
+          GitHub <span class="ext-arrow">↗</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container hero-container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="pulse-dot"></span>
+            <span>v1.2.0 Released &bull; Local-First Git CLI</span>
+          </div>
+
+          <h1 class="hero-title">
+            Commit smarter.<br>
+            <span class="highlight-text">Stay in control.</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            Intelligent, local-first conventional commits from your terminal.
+          </p>
+
+          <p class="hero-desc">
+            Smart Commit analyzes your staged Git changes and helps turn them into clean Conventional Commits — without requiring an API key, cloud service, or AI provider.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#install" class="btn btn-primary">
+              <span>Get Started</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+            </a>
+            <a href="https://github.com/AashirZayd/smart-commit" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              <span>View on GitHub</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Terminal Card -->
+        <div class="hero-terminal">
+          <div class="terminal-card">
+            <div class="terminal-header">
+              <div class="window-controls">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+              </div>
+              <span class="terminal-title">bash &mdash; smart-commit</span>
+              <button class="terminal-copy" id="heroCopyBtn" aria-label="Copy terminal commands">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span class="copy-text">Copy</span>
+              </button>
+            </div>
+
+            <div class="terminal-body" id="heroTerminalContent">
+              <div class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">git add src/auth/login.js</span></div>
+              <div class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">smart-commit</span></div>
+              <div class="term-line">&nbsp;</div>
+              <div class="term-line term-dim">✔ Checking git status...</div>
+              <div class="term-line">&nbsp;</div>
+              <div class="term-line term-gray">Staged files:</div>
+              <div class="term-line term-file">  src/auth/login.js</div>
+              <div class="term-line">&nbsp;</div>
+              <div class="term-line term-gray">Changes Summary:</div>
+              <div class="term-line term-yellow">Files: 1 | +24 additions | -2 deletions</div>
+              <div class="term-line">&nbsp;</div>
+              <div class="term-line term-cyan">Suggested commit type: feat (substantial new functionality added)</div>
+              <div class="term-line">&nbsp;</div>
+              <div class="term-line term-interactive"><span class="term-q">?</span> <span class="term-bold">Commit type:</span> <span class="term-ans">feat</span></div>
+              <div class="term-line term-interactive"><span class="term-q">?</span> <span class="term-bold">Scope:</span> <span class="term-ans">auth</span></div>
+              <div class="term-line term-interactive"><span class="term-q">?</span> <span class="term-bold">Commit message:</span> <span class="term-ans">add user session validation</span></div>
+              <div class="term-line">&nbsp;</div>
+              <div class="term-line term-commit">✨ feat(auth): add user session validation</div>
+              <div class="term-line">&nbsp;</div>
+              <div class="term-line term-green">✔ Commit created successfully</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trust Strip -->
+    <section class="trust-strip">
+      <div class="container trust-container">
+        <div class="trust-item">
+          <span class="trust-check">✓</span>
+          <span>Local-First</span>
+        </div>
+        <div class="trust-divider"></div>
+        <div class="trust-item">
+          <span class="trust-check">✓</span>
+          <span>No API Keys</span>
+        </div>
+        <div class="trust-divider"></div>
+        <div class="trust-item">
+          <span class="trust-check">✓</span>
+          <span>No Cloud Backend</span>
+        </div>
+        <div class="trust-divider"></div>
+        <div class="trust-item">
+          <span class="trust-check">✓</span>
+          <span>No Telemetry</span>
+        </div>
+        <div class="trust-divider"></div>
+        <div class="trust-item">
+          <span class="trust-check">✓</span>
+          <span>MIT Open Source</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- What is Smart Commit / Workflow Section -->
+    <section class="section" id="what-is">
+      <div class="container">
+        <div class="section-header text-center">
+          <p class="section-tag">Architecture</p>
+          <h2 class="section-title">Conventional commits,<br>without the ceremony.</h2>
+          <p class="section-desc">
+            Smart Commit reads the changes you have already staged, infers useful commit metadata using local heuristics, and formats a clean conventional commit directly in your terminal.
+          </p>
+        </div>
+
+        <div class="flow-pipeline">
+          <div class="flow-step">
+            <div class="flow-step-icon">📦</div>
+            <div class="flow-step-title">Staged Changes</div>
+            <div class="flow-step-desc">Strictly analyzes files in your Git index (`git add`)</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-step-icon">🔍</div>
+            <div class="flow-step-title">Local Diff Analysis</div>
+            <div class="flow-step-desc">Inspects patch deltas, line changes, and file statuses</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-step-icon">🎯</div>
+            <div class="flow-step-title">Scope & Type Inference</div>
+            <div class="flow-step-desc">Determines domain boundaries and semantic change type</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step highlight-step">
+            <div class="flow-step-icon">✨</div>
+            <div class="flow-step-title">Conventional Commit</div>
+            <div class="flow-step-desc">Structured commit ready for history and release notes</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section class="section section-dark" id="features">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-tag">Capabilities</p>
+          <h2 class="section-title">Engineered for developer flow.</h2>
+          <p class="section-desc">
+            Deterministic, transparent tools that stay fast and respect your privacy.
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🧠</div>
+            <h3 class="feature-title">Diff-Aware Type Detection</h3>
+            <p class="feature-desc">
+              Analyzes actual additions, deletions, renames, and error-handling modifications in `git diff --staged` instead of relying only on naive filenames.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📂</div>
+            <h3 class="feature-title">Hierarchy-Aware Scopes</h3>
+            <p class="feature-desc">
+              Extracts meaningful domains (`src/auth/login.js` &rarr; `auth`, `packages/payments/...` &rarr; `payments`) while gracefully ignoring generic directories.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3 class="feature-title">Git Pre-Flight Safety</h3>
+            <p class="feature-desc">
+              Protects repository integrity. Verifies Git status, warns on detached `HEAD`, and blocks operations during rebases, cherry-picks, or merge conflicts.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3 class="feature-title">Quick Mode</h3>
+            <p class="feature-desc">
+              Need to commit in one keystroke? Run `smart-commit --quick` to auto-commit using the inferred type and dominant scope instantly.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3 class="feature-title">False-Positive Protection</h3>
+            <p class="feature-desc">
+              Token-aware matching prevents substring confusion. Files like `address.js`, `debug.js`, or `contest.js` never trigger accidental types.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3 class="feature-title">100% Local & Private</h3>
+            <p class="feature-desc">
+              Your source code never leaves your computer. No telemetry, no background network pings, no cloud models, and no account requirements.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works (Step by Step) -->
+    <section class="section" id="how-it-works">
+      <div class="container">
+        <div class="section-header text-center">
+          <p class="section-tag">Workflow</p>
+          <h2 class="section-title">How It Works</h2>
+          <p class="section-desc">
+            Seamlessly integrates into your existing Git terminal habits.
+          </p>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-number">01</div>
+            <h3 class="step-title">Stage your changes</h3>
+            <p class="step-desc">Stage specific files or your entire worktree as you normally do.</p>
+            <div class="step-code">
+              <code>git add .</code>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">02</div>
+            <h3 class="step-title">Run Smart Commit</h3>
+            <p class="step-desc">Launch the CLI to analyze the staged diff and repository topology.</p>
+            <div class="step-code">
+              <code>smart-commit</code>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">03</div>
+            <h3 class="step-title">Review the suggestion</h3>
+            <p class="step-desc">Confirm or adjust the inferred type, detected scope, and message.</p>
+            <div class="step-code">
+              <code>? Commit type: feat (enter)</code>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">04</div>
+            <h3 class="step-title">Commit created</h3>
+            <p class="step-desc">A clean Conventional Commit is recorded directly into your Git history.</p>
+            <div class="step-code">
+              <code>✨ feat(auth): add login</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Examples Section -->
+    <section class="section section-dark" id="examples">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-tag">Inference Examples</p>
+          <h2 class="section-title">Deterministic signals in action.</h2>
+          <p class="section-desc">
+            Here is how Smart Commit classifies real repository changes without guesswork.
+          </p>
+        </div>
+
+        <div class="table-card">
+          <div class="table-responsive">
+            <table class="examples-table">
+              <thead>
+                <tr>
+                  <th>Staged Changes</th>
+                  <th>Inferred Type</th>
+                  <th>Inferred Scope</th>
+                  <th>Resulting Commit Header</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>src/auth/oauth.js</code> <span class="tag-new">added</span></td>
+                  <td><span class="type-badge badge-feat">feat</span></td>
+                  <td><code>auth</code></td>
+                  <td><code>✨ feat(auth): ...</code></td>
+                </tr>
+                <tr>
+                  <td><code>src/auth/login.js</code> <span class="tag-mod">error handling fix</span></td>
+                  <td><span class="type-badge badge-fix">fix</span></td>
+                  <td><code>auth</code></td>
+                  <td><code>🐛 fix(auth): ...</code></td>
+                </tr>
+                <tr>
+                  <td><code>docs/api/endpoints.md</code></td>
+                  <td><span class="type-badge badge-docs">docs</span></td>
+                  <td><code>api</code></td>
+                  <td><code>📝 docs(api): ...</code></td>
+                </tr>
+                <tr>
+                  <td><code>tests/auth/login.test.js</code></td>
+                  <td><span class="type-badge badge-test">test</span></td>
+                  <td><code>auth</code></td>
+                  <td><code>🧪 test(auth): ...</code></td>
+                </tr>
+                <tr>
+                  <td><code>src/auth/login.js</code> + <code>README.md</code></td>
+                  <td><span class="type-badge badge-feat">feat</span> (code dominates)</td>
+                  <td><code>auth</code></td>
+                  <td><code>✨ feat(auth): ...</code></td>
+                </tr>
+                <tr>
+                  <td><code>package.json</code> + <code>package-lock.json</code></td>
+                  <td><span class="type-badge badge-chore">chore</span></td>
+                  <td>none</td>
+                  <td><code>🔧 chore: ...</code></td>
+                </tr>
+                <tr>
+                  <td><code>src/auth/login.js</code> + <code>src/payments/card.js</code></td>
+                  <td><span class="type-badge badge-feat">feat</span></td>
+                  <td>none (mixed domain)</td>
+                  <td><code>✨ feat: ...</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Installation & Reference -->
+    <section class="section" id="install">
+      <div class="container">
+        <div class="section-header text-center">
+          <p class="section-tag">Installation</p>
+          <h2 class="section-title">Up and running in seconds.</h2>
+          <p class="section-desc">
+            Requires Node.js &ge; 20.12.0 (native ES Modules). Compatible with macOS, Linux, and Windows.
+          </p>
+        </div>
+
+        <div class="install-grid">
+          <!-- Install Box -->
+          <div class="install-card">
+            <h3 class="card-title">Global Installation</h3>
+            <p class="card-subtitle">Install globally via npm to access `smart-commit` anywhere:</p>
+            <div class="code-box">
+              <span class="code-prefix">$</span>
+              <code id="npmInstallCmd">npm install -g smart-commit-cli</code>
+              <button class="code-copy-btn" data-copy="npm install -g smart-commit-cli" aria-label="Copy install command">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+            </div>
+
+            <h4 class="sub-title">Or Run Instantly via npx</h4>
+            <div class="code-box">
+              <span class="code-prefix">$</span>
+              <code id="npxCmd">npx smart-commit-cli</code>
+              <button class="code-copy-btn" data-copy="npx smart-commit-cli" aria-label="Copy npx command">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- CLI Reference Box -->
+          <div class="install-card">
+            <h3 class="card-title">CLI Commands</h3>
+            <div class="cli-list">
+              <div class="cli-item">
+                <code>smart-commit</code>
+                <span>Interactive guided commit workflow</span>
+              </div>
+              <div class="cli-item">
+                <code>smart-commit --quick</code>
+                <span>Auto-commit immediately using inferred type and scope</span>
+              </div>
+              <div class="cli-item">
+                <code>smart-commit --no-emoji</code>
+                <span>Create commits without emoji prefixes</span>
+              </div>
+              <div class="cli-item">
+                <code>smart-commit --help</code>
+                <span>Display help and command options</span>
+              </div>
+              <div class="cli-item">
+                <code>smart-commit --version</code>
+                <span>Display current version (1.2.0)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Conventional Commits Explanation -->
+    <section class="section section-dark">
+      <div class="container">
+        <div class="section-header text-center">
+          <p class="section-tag">Standardization</p>
+          <h2 class="section-title">Conventional Commits Specification</h2>
+          <p class="section-desc">
+            Smart Commit formats your history in accordance with industry standards:
+          </p>
+        </div>
+
+        <div class="format-spec-card">
+          <div class="spec-formula">
+            <span class="spec-part spec-type">&lt;type&gt;</span>
+            <span class="spec-part spec-scope">(&lt;scope&gt;)</span>: 
+            <span class="spec-part spec-desc">&lt;description&gt;</span>
+          </div>
+
+          <div class="spec-types-grid">
+            <div class="spec-type-item">
+              <span class="type-badge badge-feat">feat</span>
+              <span>A new feature or functional addition</span>
+            </div>
+            <div class="spec-type-item">
+              <span class="type-badge badge-fix">fix</span>
+              <span>A bug fix or error correction</span>
+            </div>
+            <div class="spec-type-item">
+              <span class="type-badge badge-docs">docs</span>
+              <span>Documentation updates only</span>
+            </div>
+            <div class="spec-type-item">
+              <span class="type-badge badge-style">style</span>
+              <span>Formatting changes that do not alter code logic</span>
+            </div>
+            <div class="spec-type-item">
+              <span class="type-badge badge-refactor">refactor</span>
+              <span>Code restructuring without new features or fixes</span>
+            </div>
+            <div class="spec-type-item">
+              <span class="type-badge badge-test">test</span>
+              <span>Adding or modifying automated tests</span>
+            </div>
+            <div class="spec-type-item">
+              <span class="type-badge badge-chore">chore</span>
+              <span>Build tools, dependencies, or configuration</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Privacy Section -->
+    <section class="section">
+      <div class="container">
+        <div class="privacy-box">
+          <div class="privacy-content">
+            <div class="privacy-icon">🔒</div>
+            <h2 class="privacy-title">Your code stays where it belongs.</h2>
+            <p class="privacy-desc">
+              Smart Commit performs all analysis locally against your staged Git changes.
+            </p>
+            <div class="privacy-points">
+              <div class="point-item"><strong>No API Key:</strong> Zero third-party service setup.</div>
+              <div class="point-item"><strong>No Cloud Processing:</strong> All logic runs in Node.js on your machine.</div>
+              <div class="point-item"><strong>No Telemetry:</strong> Staged patches and repositories are never tracked.</div>
+              <div class="point-item"><strong>No Account Required:</strong> Works directly with your standard Git CLI.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Open Source & Community Section -->
+    <section class="section section-dark text-center">
+      <div class="container">
+        <p class="section-tag">Community</p>
+        <h2 class="section-title">Built in the open.</h2>
+        <p class="section-desc max-w-lg mx-auto">
+          Smart Commit is open source and exists thanks to everyone who uses it, reports issues, suggests improvements, and contributes code.
+        </p>
+
+        <!-- Contributors / Thank You Box -->
+        <div class="contributors-card">
+          <div class="thank-you-badge">Thank You</div>
+          <p class="thank-you-text">
+            To everyone who has used Smart Commit, opened an issue, suggested an improvement, or contributed to the project &mdash; thank you.
+          </p>
+          <div class="contributors-links">
+            <a href="https://github.com/AashirZayd/smart-commit/graphs/contributors" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+              <span>View contributors &rarr;</span>
+            </a>
+            <a href="https://github.com/AashirZayd/smart-commit" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              <span>View source on GitHub &rarr;</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Buy Me a Coffee Support Card -->
+        <div class="support-card">
+          <div class="support-icon" aria-hidden="true">☕</div>
+          <div class="support-content">
+            <h3 class="support-title">Support Smart Commit</h3>
+            <p class="support-desc">
+              If Smart Commit saves you a few keystrokes, consider buying me a coffee.
+            </p>
+          </div>
+          <a href="https://www.buymeacoffee.com/aashirzaydP" class="btn btn-bmc" target="_blank" rel="noopener noreferrer" aria-label="Support Smart Commit on Buy Me a Coffee">
+            <svg class="bmc-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4v-2z"/></svg>
+            <span>Buy me a coffee</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-left">
+        <div class="footer-logo">⚡ smart-commit</div>
+        <div class="footer-copy">Open source &bull; MIT License &bull; &copy; 2026 Aashir Zayd</div>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/AashirZayd/smart-commit" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <span class="footer-sep">&bull;</span>
+        <a href="https://www.npmjs.com/package/smart-commit-cli" target="_blank" rel="noopener noreferrer">npm</a>
+        <span class="footer-sep">&bull;</span>
+        <a href="https://github.com/AashirZayd/smart-commit/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">License</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

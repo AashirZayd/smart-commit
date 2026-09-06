@@ -208,9 +208,27 @@ Current test suite: **66 tests passing, 0 failures**.
 
 ---
 
+## Documentation & Landing Page
+
+Smart Commit includes a clean, standalone landing page in the [`docs/`](./docs) directory designed for GitHub Pages:
+
+1. Go to repository **Settings** &rarr; **Pages**.
+2. Under **Build and deployment** &gt; **Branch**, select `main` and `/docs`.
+3. Click **Save** to publish.
+
+---
+
 ## Project Status
 
 Smart Commit is maintained as a focused, lightweight open-source CLI. Development emphasizes Git safety, reliability, and local repository intelligence.
+
+---
+
+## Support & Community
+
+Smart Commit is free and open source. If Smart Commit saves you a few keystrokes, you can support its development with a [coffee](https://www.buymeacoffee.com/aashirzaydP).
+
+Thank you to everyone who has used Smart Commit, reported an issue, or contributed to the project! You can view the project's [contributors on GitHub](https://github.com/AashirZayd/smart-commit/graphs/contributors).
 
 ---
 
