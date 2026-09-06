@@ -1,54 +1,68 @@
-<div align="center">
+# Smart Commit
 
-<pre>
+> Intelligent, local-first conventional commits from your terminal.
 
-      ░██████   ░███     ░███    ░███    ░█████████  ░██████████     ░██████    ░██████   ░███     ░███ ░███     ░███ ░██████░██████████     ░██████  ░██         ░██████
-     ░██   ░██  ░████   ░████   ░██░██   ░██     ░██     ░██        ░██   ░██  ░██   ░██  ░████   ░████ ░████   ░████   ░██      ░██        ░██   ░██ ░██           ░██  
-    ░██         ░██░██ ░██░██  ░██  ░██  ░██     ░██     ░██       ░██        ░██     ░██ ░██░██ ░██░██ ░██░██ ░██░██   ░██      ░██       ░██        ░██           ░██  
-     ░████████  ░██ ░████ ░██ ░█████████ ░█████████      ░██       ░██        ░██     ░██ ░██ ░████ ░██ ░██ ░████ ░██   ░██      ░██       ░██        ░██           ░██  
-            ░██ ░██  ░██  ░██ ░██    ░██ ░██   ░██       ░██       ░██        ░██     ░██ ░██  ░██  ░██ ░██  ░██  ░██   ░██      ░██       ░██        ░██           ░██  
-     ░██   ░██  ░██       ░██ ░██    ░██ ░██    ░██      ░██        ░██   ░██  ░██   ░██  ░██       ░██ ░██       ░██   ░██      ░██        ░██   ░██ ░██           ░██  
-      ░██████   ░██       ░██ ░██    ░██ ░██     ░██     ░██         ░██████    ░██████   ░██       ░██ ░██       ░██ ░██████    ░██         ░██████  ░██████████ ░██████
-                                                                                                                                                                         
-                                                                                                                                                                         
-                                                                                                                                                                        
-</pre>
+[![npm version](https://img.shields.io/npm/v/smart-commit-cli?style=flat-square)](https://www.npmjs.com/package/smart-commit-cli)
+[![Node version](https://img.shields.io/badge/node-%3E%3D20.12.0-brightgreen?style=flat-square)](https://nodejs.org)
+[![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](./LICENSE)
+[![Tests](https://img.shields.io/badge/tests-66%20passing-brightgreen?style=flat-square)](https://github.com/AashirZayd/smart-commit)
 
-# Smart Commit CLI
-
-**The intelligent commit architect for modern developers.**
-
-Automatically analyze staged files, detect scopes, and generate clean **Conventional Commit** messages instantly.
-
-</div>
+Smart Commit analyzes your staged Git changes and suggests a conventional commit type, scope, and formatted message — without requiring an API key, cloud service, or AI provider.
 
 ---
 
-<div align="center">
+## Terminal Preview
 
-[![npm](https://img.shields.io/npm/v/smart-commit-cli?style=for-the-badge)](https://www.npmjs.com/package/smart-commit-cli)
-![downloads](https://img.shields.io/npm/dt/smart-commit-cli?style=for-the-badge)
-![license](https://img.shields.io/npm/l/smart-commit-cli?style=for-the-badge)
-![stars](https://img.shields.io/github/stars/AashirZayd/smart-commit?style=for-the-badge)
+```text
+$ smart-commit
 
-</div>
+✔ Checking git status...
 
+Staged files:
+  src/auth/login.js
 
+Changes Summary:
+Files: 1 | +24 additions | -2 deletions
 
-#  Capabilities
+Suggested commit type: feat (substantial new functionality added)
 
-| Feature                   | Description                                                               |
-| ------------------------- | ------------------------------------------------------------------------- |
-| Intelligent Suggestions   | Detects whether your changes are a feature, fix, docs update, or refactor |
-| Automatic Scope Detection | Infers commit scopes from directory structure                             |
-| Interactive CLI           | Guided commit generation with clean prompts                               |
-| Diff Summary              | Shows additions and deletions before committing                           |
-| Emoji Support             | Optional Gitmoji-style commits                                            |
-| Quick Mode                | Commit instantly using `--quick`                                          |
+? Commit type: feat
+? Scope: auth
+? Commit message: add user session validation
+
+✨ feat(auth): add user session validation
+
+Commit created successfully
+```
 
 ---
 
-#  Quick Install
+## What It Does
+
+Smart Commit inspects your staged Git changes using deterministic, explainable heuristics:
+
+* **Staged-Diff-Aware Type Detection**: Analyzes line deltas, file additions, modifications, renames, and deletions from `git diff --staged` rather than relying only on naive filename matching.
+* **Hierarchy-Aware Scope Inference**: Automatically extracts the domain, module, or package from your project hierarchy (`src/auth/login.js` &rarr; `auth`, `packages/payments/src/card.js` &rarr; `payments`), skipping generic directories like `src` and `lib`.
+* **Multi-File Dominance**: Identifies the primary domain across multiple changes while avoiding forced guesses on genuinely mixed changes.
+* **Git Pre-Flight Safety**: Verifies repository state before touching Git history. Rejects bare repositories, warns on detached `HEAD`, and blocks execution during active merges, rebases, or unresolved conflicts.
+* **Strict Index Fidelity**: Operates exclusively on staged files (`git add`). Unstaged modifications and untracked files are never committed automatically.
+
+---
+
+## Features
+
+* **Staged Git Patch Intelligence**: Primary signal is derived from the actual code diff.
+* **Conventional Commits**: Clean, standard format (`type(scope): message`) with optional Gitmoji.
+* **Interactive & Quick Modes**: Guided interactive prompts or instant commits via `--quick`.
+* **Cross-Platform**: Normalizes paths across Windows (`\`), macOS, and Linux (`/`).
+* **False-Positive Protection**: Token-aware matching prevents substring mistakes (`address.js` won't trigger `feat`, `debug.js` won't trigger `fix`).
+* **Local & Private by Design**: Zero external API calls, zero telemetry, zero cloud dependencies.
+
+---
+
+## Quick Install
+
+Requires **Node.js &gt;=20.12.0** (native ES Modules).
 
 Install globally:
 
@@ -56,120 +70,150 @@ Install globally:
 npm install -g smart-commit-cli
 ```
 
-Or run instantly:
+Or run directly via `npx`:
 
 ```bash
 npx smart-commit-cli
 ```
 
-Works on **Linux, macOS, and Windows**.
-
 ---
 
-# 🛠 Usage
+## Usage
 
-Stage your changes:
+### 1. Stage your changes
 
 ```bash
-git add .
+git add src/auth/login.js
 ```
 
-Run Smart Commit:
+### 2. Run Smart Commit
 
 ```bash
 smart-commit
 ```
 
-Example output:
+Follow the prompts to confirm or customize the commit type, inferred scope, and message.
 
-```
- Checking git status...
+### Quick Mode
 
- Staged files:
-src/auth/login.js
-
- Changes Summary:
-Files: 1 | +20 additions | -3 deletions
-
- Suggested commit type: feat
-
-? Commit type: feat
-? Scope: auth
-? Commit message: add login validation
-
- feat(auth): add login validation
-```
-
----
-
-#  CLI Commands
-
-```
-smart-commit           # interactive commit workflow
-smart-commit --quick   # auto commit using suggestion
-smart-commit --no-emoji # disable emoji commits
-smart-commit --help    # show CLI help
-```
-
----
-
-# 📸 Screenshots
-
-### Commit detection
-
-![Screenshot](./assets/screenshot1.png)
-
-### Interactive prompt
-
-![Screenshot](./assets/screenshot2.png)
-
-### Commit preview
-
-![Screenshot](./assets/screenshot3.png)
-
----
-
-#  Roadmap
-
-* AI-powered commit message generation
-* `.smartcommitrc` configuration support
-* Monorepo scope detection
-* Git hook integration
-
----
-
-# 🤝 Contributing
-
-Clone the repo and run locally:
+To commit immediately using the automatically inferred type and scope:
 
 ```bash
-git clone https://github.com/AashirZayd/smart-commit-cli
-cd smart-commit-cli
+smart-commit --quick
+```
+
+---
+
+## Examples
+
+| Staged Changes | Inferred Type | Inferred Scope | Resulting Header |
+| --- | --- | --- | --- |
+| `src/auth/oauth.js` (new file) | `feat` | `auth` | `feat(auth): ...` |
+| `src/auth/login.js` (targeted bug fix) | `fix` | `auth` | `fix(auth): ...` |
+| `docs/api/endpoints.md` | `docs` | `api` | `docs(api): ...` |
+| `tests/auth/login.test.js` | `test` | `auth` | `test(auth): ...` |
+| `styles/main.css` | `style` | none | `style: ...` |
+| `package.json` | `chore` | none | `chore: ...` |
+| `src/auth/login.js` + `README.md` | `feat` (code dominates) | `auth` | `feat(auth): ...` |
+| `src/auth/login.js` + `src/payments/card.js` | `feat` | none (mixed) | `feat: ...` |
+
+---
+
+## CLI Reference
+
+| Command / Option | Description |
+| --- | --- |
+| `smart-commit` | Launch interactive commit prompt |
+| `smart-commit --quick` | Automatically create commit using inferred type and scope |
+| `smart-commit --no-emoji` | Disable emoji prefix in commit messages |
+| `smart-commit --help` | Display CLI help and available options |
+| `smart-commit --version` | Display installed CLI version |
+
+---
+
+## Configuration
+
+Smart Commit supports optional project-level configuration via a `.smartcommitrc` file in your repository root:
+
+```json
+{
+  "types": {
+    "feat": ["add", "feature", "implement", "create"],
+    "fix": ["bug", "error", "patch", "resolve", "fix"],
+    "docs": ["docs", "readme", "documentation"],
+    "refactor": ["cleanup", "refactor", "optimize"],
+    "test": ["test", "spec"],
+    "chore": ["config", "build", "setup", "chore"]
+  },
+  "emoji": {
+    "feat": "✨",
+    "fix": "🐛",
+    "docs": "📝",
+    "refactor": "♻️",
+    "test": "🧪",
+    "chore": "🔧"
+  }
+}
+```
+
+---
+
+## Conventional Commits
+
+Smart Commit formats commit messages according to the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+
+```text
+<type>(<scope>): <description>
+```
+
+Common types supported:
+* `feat`: A new feature or capability
+* `fix`: A bug fix or logic correction
+* `docs`: Documentation updates only
+* `style`: Formatting or styling changes that do not affect code logic
+* `refactor`: Code restructuring without adding features or fixing bugs
+* `test`: Adding or updating test suites
+* `chore`: Maintenance, dependencies, or configuration changes
+
+---
+
+## Local by Design
+
+Smart Commit is built on a clear privacy and architecture principle:
+
+* **No API Keys**: Works out of the box with standard Git installations.
+* **No Cloud Services**: All analysis executes locally in Node.js on your machine.
+* **No Telemetry**: Your source code and commit history are never collected or transmitted.
+* **Fast & Deterministic**: Immediate response times without network latency.
+
+---
+
+## Development
+
+To contribute or run tests locally:
+
+```bash
+# Clone the repository
+git clone https://github.com/AashirZayd/smart-commit.git
+cd smart-commit
+
+# Install dependencies
 npm install
-npm link
+
+# Run the test suite (Node.js built-in test runner)
+npm test
 ```
 
-Run:
-
-```bash
-smart-commit
-```
+Current test suite: **66 tests passing, 0 failures**.
 
 ---
 
-# 📄 License
+## Project Status
 
-MIT License
-
----
-
-# 👤 Author
-
-**Aashir Zayd**
-
-GitHub
-https://github.com/AashirZayd
+Smart Commit is maintained as a focused, lightweight open-source CLI. Development emphasizes Git safety, reliability, and local repository intelligence.
 
 ---
 
-⭐ If this project improves your workflow, consider giving it a star.
+## License
+
+[MIT](./LICENSE) &copy; 2026 Aashir Zayd

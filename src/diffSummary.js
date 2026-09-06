@@ -1,15 +1,25 @@
-const { git } = require("./git")
+import simpleGit from "simple-git"
+import { git } from "./git.js"
 
-async function getDiffSummary() {
+async function getDiffSummary(cwd) {
+  const instance = cwd ? simpleGit(cwd) : git
 
-  const summary = await git.diffSummary(["--staged"])
+  const summary = await instance.diffSummary(["--staged"])
+
+  let patch = ""
+  try {
+    patch = await instance.diff(["--staged"])
+  } catch {
+    patch = ""
+  }
 
   return {
     files: summary.files.length,
     insertions: summary.insertions,
-    deletions: summary.deletions
+    deletions: summary.deletions,
+    fileDetails: summary.files,
+    patch
   }
-
 }
 
-module.exports = { getDiffSummary }
+export { getDiffSummary }

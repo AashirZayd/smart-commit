@@ -1,8 +1,9 @@
 function buildCommit({type, scope, message, emoji}) {
 
+  const prefix = emoji ? `${emoji} ` : ""
   const scopePart = scope ? `(${scope})` : ""
 
-  return `${emoji} ${type}${scopePart}: ${message}`
+  return `${prefix}${type}${scopePart}: ${message}`
 }
 
-module.exports = { buildCommit }
+export { buildCommit }

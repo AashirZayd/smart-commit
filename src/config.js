@@ -1,5 +1,5 @@
-const fs = require("fs")
-const path = require("path")
+import fs from "node:fs"
+import path from "node:path"
 
 function loadConfig() {
   const configPath = path.join(process.cwd(), ".smartcommitrc")
@@ -16,4 +16,4 @@ function loadConfig() {
   return null
 }
 
-module.exports = { loadConfig }
+export { loadConfig }

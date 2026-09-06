@@ -1,38 +1,97 @@
 #!/usr/bin/env node
 
-const inquirer = require("inquirer")
-const chalk = require("chalk").default
-const ora = require("ora").default
+import fs from "node:fs"
+import { fileURLToPath } from "node:url"
+import path from "node:path"
+import { Command } from "commander"
+import inquirer from "inquirer"
+import chalk from "chalk"
+import ora from "ora"
 
-const { git, getStagedFiles } = require("../src/git")
-const { detectScopes } = require("../src/scopes")
-const { buildCommit } = require("../src/commit")
-const emojis = require("../src/emojis")
-const { suggestType } = require("../src/suggestType")
-const { getDiffSummary } = require("../src/diffSummary")
+import { git, getStagedFiles, getRepositoryState } from "../src/git.js"
+import { detectScopes } from "../src/scopes.js"
+import { buildCommit } from "../src/commit.js"
+import emojis from "../src/emojis.js"
+import { suggestType } from "../src/suggestType.js"
+import { getDiffSummary } from "../src/diffSummary.js"
 
-const args = process.argv.slice(2)
+const packageJsonUrl = new URL("../package.json", import.meta.url)
+const packageJson = JSON.parse(fs.readFileSync(packageJsonUrl, "utf8"))
+const VERSION = packageJson.version
 
-const QUICK_MODE = args.includes("--quick")
-const NO_EMOJI = args.includes("--no-emoji")
+function isPromptCancellationError(err) {
+  if (!err) return false
+  return (
+    err.name === "ExitPromptError" ||
+    err.name === "CancelPromptError" ||
+    err.name === "AbortPromptError" ||
+    (typeof err.message === "string" && err.message.includes("force closed the prompt with SIGINT"))
+  )
+}
 
-async function run() {
+async function run(options = {}) {
+  const quickMode = Boolean(options.quick)
+  const noEmoji = options.emoji === false || Boolean(options.noEmoji)
+  let spinner = null
+
+  const sigintHandler = () => {
+    if (spinner && typeof spinner.stop === "function") {
+      spinner.stop()
+    }
+    console.log(chalk.gray("\nCommit cancelled\n"))
+    process.exit(130)
+  }
+
+  process.once("SIGINT", sigintHandler)
 
   try {
 
-    const spinner = ora({
-      text: "Checking git status...",
-      spinner: "dots"
-    }).start()
+    const repoState = await getRepositoryState()
 
-    const files = await getStagedFiles()
+    if (!repoState.isRepo) {
+      if (repoState.isBare) {
+        console.log(chalk.red("\nSmart Commit cannot run in a bare Git repository."))
+        console.log(chalk.gray("Run this command from inside a working Git repository.\n"))
+        process.exit(1)
+      }
 
-    spinner.stop()
+      console.log(chalk.red("\nSmart Commit requires a Git repository."))
+      console.log(chalk.gray("Run this command from inside a Git repository.\n"))
+      process.exit(1)
+    }
+
+    if (repoState.rebaseInProgress) {
+      console.log(chalk.red("\nA Git rebase is currently in progress."))
+      console.log(chalk.gray('Use "git rebase --continue" or "git rebase --abort" to proceed.\n'))
+      process.exit(1)
+    }
+
+    if (repoState.cherryPickInProgress) {
+      console.log(chalk.red("\nA Git cherry-pick is currently in progress."))
+      console.log(chalk.gray('Use "git cherry-pick --continue" or "git cherry-pick --abort" to proceed.\n'))
+      process.exit(1)
+    }
+
+    if (repoState.hasConflicts) {
+      console.log(chalk.red("\nUnresolved merge conflicts detected."))
+      console.log(chalk.gray("Resolve conflicts and stage the resolved files before committing.\n"))
+      process.exit(1)
+    }
+
+    if (repoState.detached) {
+      console.log(chalk.yellow("\nWarning: You are currently in a detached HEAD state.\n"))
+    }
+
+    if (repoState.mergeInProgress) {
+      console.log(chalk.yellow("\nWarning: A Git merge is currently in progress. This will be a merge commit.\n"))
+    }
+
+    const files = repoState.stagedFiles
 
     if (!files.length) {
       console.log(chalk.red("\nNo staged files found"))
       console.log(chalk.gray("Run: git add .\n"))
-      process.exit()
+      process.exit(0)
     }
 
     console.log(chalk.gray("\nStaged files:"))
@@ -47,7 +106,7 @@ async function run() {
       )
     )
 
-    const suggestion = suggestType(files)
+    const suggestion = suggestType(files, { diff, repoState })
 
     console.log(
       chalk.cyan(
@@ -57,13 +116,15 @@ async function run() {
 
     const scopes = detectScopes(files)
 
-    if (QUICK_MODE) {
+    if (quickMode) {
+
+      const scope = scopes.length ? scopes[0] : ""
 
       const commit = buildCommit({
         type: suggestion.type,
-        scope: "",
+        scope,
         message: "auto commit",
-        emoji: NO_EMOJI ? "" : emojis[suggestion.type] || ""
+        emoji: noEmoji ? "" : emojis[suggestion.type] || ""
       })
 
       console.log("\n" + chalk.green("Quick Commit:\n"))
@@ -73,7 +134,7 @@ async function run() {
 
       console.log(chalk.green("\nCommit created successfully\n"))
 
-      return
+      process.exit(0)
     }
 
     const commitTypes = [
@@ -116,7 +177,7 @@ async function run() {
     ])
 
     const scope = answers.scope === "none" ? "" : answers.scope
-    const emoji = NO_EMOJI ? "" : emojis[answers.type] || ""
+    const emoji = noEmoji ? "" : emojis[answers.type] || ""
 
     const commit = buildCommit({
       type: answers.type,
@@ -142,20 +203,71 @@ async function run() {
 
     if (!confirm.commit) {
       console.log(chalk.gray("\nCommit skipped\n"))
-      return
+      process.exit(0)
     }
 
     await git.commit(commit)
 
     console.log(chalk.green("\nCommit created successfully\n"))
+    process.exit(0)
 
   } catch (err) {
+    if (spinner && typeof spinner.stop === "function") {
+      spinner.stop()
+    }
+
+    if (isPromptCancellationError(err)) {
+      console.log(chalk.gray("\nCommit cancelled\n"))
+      process.exit(130)
+    }
 
     console.log(chalk.red("\nError running smart-commit\n"))
-    console.log(err.message)
+    console.log(err.message || String(err))
+    process.exit(1)
 
+  } finally {
+    process.removeListener("SIGINT", sigintHandler)
   }
 
 }
 
-run()
+function createProgram() {
+  const program = new Command()
+
+  program
+    .name("smart-commit")
+    .description("Intelligent Git commit assistant")
+    .version(VERSION, "-V, --version", "output the version number")
+    .option("--quick", "Create a commit using quick mode")
+    .option("--no-emoji", "Disable commit emoji")
+    .action(async (opts) => {
+      await run({
+        quick: Boolean(opts.quick),
+        emoji: opts.emoji !== false
+      })
+    })
+
+  return program
+}
+
+async function main(argv = process.argv) {
+  try {
+    const program = createProgram()
+    await program.parseAsync(argv)
+  } catch (err) {
+    console.log(chalk.red("\nError running smart-commit\n"))
+    console.log(err.message || String(err))
+    process.exit(1)
+  }
+}
+
+const isMain =
+  process.argv[1] &&
+  path.resolve(fileURLToPath(import.meta.url)).toLowerCase() ===
+    path.resolve(process.argv[1]).toLowerCase()
+
+if (isMain) {
+  main()
+}
+
+export { run, isPromptCancellationError, createProgram, main, VERSION }
