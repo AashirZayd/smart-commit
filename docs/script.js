@@ -1,10 +1,11 @@
 /**
- * Smart Commit Landing Page Vanilla JavaScript
- * Lightweight, zero dependencies, accessible.
+ * Smart Commit Landing Page Script
+ * Retro-Tech Early-2000s Developer Software Aesthetic
+ * Vanilla JS, lightweight, zero dependencies, accessible.
  */
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Mobile Navigation Toggle
+  // --- Mobile Navigation Toggle ---
   const navToggle = document.getElementById("navToggle");
   const navMenu = document.getElementById("navMenu");
 
@@ -25,21 +26,23 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Copy to Clipboard Utility
-  function copyTextToClipboard(text, triggerBtn, successText = "Copied!") {
+  // --- Copy to Clipboard Utility ---
+  function copyTextToClipboard(text, triggerBtn, successText = "COPIED!") {
     if (!navigator.clipboard) {
-      // Fallback for older browsers
+      // Fallback for non-secure contexts or older browsers
       const textarea = document.createElement("textarea");
       textarea.value = text;
       textarea.style.position = "fixed";
-      textarea.style.opacity = "0";
+      textarea.style.left = "-9999px";
+      textarea.style.top = "0";
       document.body.appendChild(textarea);
+      textarea.focus();
       textarea.select();
       try {
         document.execCommand("copy");
         showCopyFeedback(triggerBtn, successText);
       } catch (err) {
-        console.error("Copy failed", err);
+        console.error("Smart Commit: Copy fallback failed", err);
       }
       document.body.removeChild(textarea);
       return;
@@ -47,50 +50,86 @@ document.addEventListener("DOMContentLoaded", () => {
 
     navigator.clipboard.writeText(text).then(
       () => showCopyFeedback(triggerBtn, successText),
-      (err) => console.error("Clipboard write error:", err)
+      (err) => console.error("Smart Commit: Clipboard write error:", err)
     );
   }
 
   function showCopyFeedback(btn, feedbackText) {
-    const originalHtml = btn.innerHTML;
-    const originalText = btn.querySelector(".copy-text");
+    if (!btn) return;
 
-    if (originalText) {
-      originalText.textContent = feedbackText;
-      btn.style.color = "var(--color-green)";
+    const originalHtml = btn.innerHTML;
+    const btnTextSpan = btn.querySelector(".btn-text");
+
+    btn.classList.add("copied");
+
+    if (btnTextSpan) {
+      const originalText = btnTextSpan.textContent;
+      btnTextSpan.textContent = `✔ ${feedbackText}`;
       setTimeout(() => {
-        originalText.textContent = "Copy";
-        btn.style.color = "";
+        btnTextSpan.textContent = originalText;
+        btn.classList.remove("copied");
       }, 2000);
     } else {
-      btn.innerHTML = `
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="20 6 9 17 4 12"></polyline>
-        </svg>
-      `;
+      btn.textContent = `✔ ${feedbackText}`;
       setTimeout(() => {
         btn.innerHTML = originalHtml;
+        btn.classList.remove("copied");
       }, 2000);
     }
   }
 
-  // Hero Terminal Copy
-  const heroCopyBtn = document.getElementById("heroCopyBtn");
-  if (heroCopyBtn) {
-    heroCopyBtn.addEventListener("click", () => {
-      const commands = "git add src/auth/login.js\nsmart-commit";
-      copyTextToClipboard(commands, heroCopyBtn);
-    });
-  }
-
-  // Code Box Copy Buttons
-  const copyButtons = document.querySelectorAll(".code-copy-btn");
-  copyButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const textToCopy = btn.getAttribute("data-copy");
-      if (textToCopy) {
-        copyTextToClipboard(textToCopy, btn);
+  // --- Attach Copy Listeners to All Data-Copy Buttons ---
+  const copyElements = document.querySelectorAll("[data-copy]");
+  copyElements.forEach((el) => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      const text = el.getAttribute("data-copy");
+      if (text) {
+        copyTextToClipboard(text, el);
       }
     });
   });
+
+  // --- Retro Window Buttons Interaction (Playful Micro-Interactions) ---
+  const winClose = document.querySelector(".win-btn-close");
+  const winMin = document.querySelector(".win-btn-min");
+  const winMax = document.querySelector(".win-btn-max");
+  const heroTerminal = document.getElementById("heroTerminal");
+
+  if (winMin && heroTerminal) {
+    winMin.addEventListener("click", () => {
+      if (heroTerminal.style.display === "none") {
+        heroTerminal.style.display = "block";
+      } else {
+        heroTerminal.style.display = "none";
+      }
+    });
+  }
+
+  if (winMax && heroTerminal) {
+    winMax.addEventListener("click", () => {
+      if (heroTerminal.style.maxHeight === "none") {
+        heroTerminal.style.maxHeight = "";
+      } else {
+        heroTerminal.style.maxHeight = "none";
+      }
+    });
+  }
+
+  if (winClose && heroTerminal) {
+    winClose.addEventListener("click", () => {
+      const originalContent = heroTerminal.innerHTML;
+      heroTerminal.innerHTML = `
+        <div class="terminal-line"><span class="t-orange">[!] Process terminated by user signal (SIGTERM).</span></div>
+        <div class="terminal-line"><span class="t-dim">Session closed. Click here to restart terminal session...</span></div>
+      `;
+      heroTerminal.style.cursor = "pointer";
+      const restartHandler = () => {
+        heroTerminal.innerHTML = originalContent;
+        heroTerminal.style.cursor = "default";
+        heroTerminal.removeEventListener("click", restartHandler);
+      };
+      heroTerminal.addEventListener("click", restartHandler);
+    });
+  }
 });
